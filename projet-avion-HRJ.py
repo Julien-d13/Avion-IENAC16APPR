@@ -81,6 +81,21 @@ def evol_Cm(P):
     ut.decorate(plt.gca(), title="Evolution du Cm en fonction de l'incidence", xlab='Incidence', ylab='Cm')
     plt.show()
         
+#4
+
+def evol_dphre(P):
+    mss=[-0.1,0,0.2,1]
+    alphas = np.arange(ut.rad_of_deg(-10),ut.rad_of_deg(20),ut.rad_of_deg(1))
+    km=0.5
+    for ms in mss:
+        P.set_mass_and_static_margin(km, ms)
+        dphrs=[]
+        #for alpha in alphas:
+        #    dphr=(P.ms*P.Cla(alpha-P.a0)-P.Cm0)/P.Cmd
+        #    dphrs.append(dphr)
+        dphrs = np.array([(P.ms*P.CLa*(alpha-P.a0)-P.Cm0)/P.Cmd for alpha in alphas]  )  
+        plt.plot(ut.deg_of_rad(alphas),ut.deg_of_rad(dphrs))
+    ut.decorate(plt.gca(), 'evol dphr', 'degrés', 'degrés', legend=['marge statique {}'.format(ms) for ms in mss])
     
 ###################################################################
 # Script principal de test
