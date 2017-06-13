@@ -90,12 +90,23 @@ def evol_dphre(P):
     for ms in mss:
         P.set_mass_and_static_margin(km, ms)
         dphrs=[]
-        #for alpha in alphas:
-        #    dphr=(P.ms*P.Cla(alpha-P.a0)-P.Cm0)/P.Cmd
-        #    dphrs.append(dphr)
         dphrs = np.array([(P.ms*P.CLa*(alpha-P.a0)-P.Cm0)/P.Cmd for alpha in alphas]  )  
         plt.plot(ut.deg_of_rad(alphas),ut.deg_of_rad(dphrs))
     ut.decorate(plt.gca(), 'evol dphr', 'degrés', 'degrés', legend=['marge statique {}'.format(ms) for ms in mss])
+    
+#5    
+def evol_CLe(P):
+    q=0
+    mss=[0.2,1]
+    alphas = np.arange(ut.rad_of_deg(-10),ut.rad_of_deg(20),ut.rad_of_deg(1))
+    km=0.5
+    for ms in mss:
+        P.set_mass_and_static_margin(km, ms)
+        dphrs=[]
+        dphrs = np.array([(P.ms*P.CLa*(alpha-P.a0)-P.Cm0)/P.Cmd for alpha in alphas]  )
+        CLe=[]
+        CLe = [dyn.get_aero_coefs(dyn.va_of_mach(0.7,7000), alpha, q, dphr, P)[0] for alpha,dphr in zip(alphas,dphrs)]
+        plt.plot(alphas, CLe)
     
 ###################################################################
 # Script principal de test
@@ -105,7 +116,8 @@ aircraft = dyn.Param_A321()
 
 #evol_poussee(aircraft)
 #evol_coeff_portance(aircraft)
-evol_Cm(aircraft)
-
+# evol_dphre(aircraft)
+evol_CLe(aircraft)
+plt.show()
 
 ###################################################################
