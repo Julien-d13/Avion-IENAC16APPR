@@ -92,7 +92,13 @@ def evol_dphre(P):
         dphrs=[]
         dphrs = np.array([(P.ms*P.CLa*(alpha-P.a0)-P.Cm0)/P.Cmd for alpha in alphas]  )  
         plt.plot(ut.deg_of_rad(alphas),ut.deg_of_rad(dphrs))
-    ut.decorate(plt.gca(), 'evol dphr', 'degrés', 'degrés', legend=['marge statique {}'.format(ms) for ms in mss])
+    label1 = patches.Patch(color='blue',label='ms = -0.1')
+    label2 = patches.Patch(color='green',label='ms = 0')
+    label3 = patches.Patch(color='red',label='ms = 0.2')
+    label4 = patches.Patch(color='cyan',label='ms = 1')
+    plt.legend(loc='upper right',handles=[label1,label2,label3,label4])
+    ut.decorate(plt.gca(), "Evolution de DPHRe en fonction de l'incidence", 'Incidence', 'Delta de braquage équilibré')
+    plt.show()
     
 #5    
 def evol_CLe(P):
@@ -107,6 +113,12 @@ def evol_CLe(P):
         CLe=[]
         CLe = [dyn.get_aero_coefs(dyn.va_of_mach(0.7,7000), alpha, q, dphr, P)[0] for alpha,dphr in zip(alphas,dphrs)]
         plt.plot(alphas, CLe)
+    label1 = patches.Patch(color='blue',label='ms = 0.2')
+    label2 = patches.Patch(color='green',label='ms = 1')
+    plt.legend(loc='upper left',handles=[label1,label2])
+    ut.decorate(plt.gca(), "Evolution de CLe en fonction de l'incidence", 'Incidence', 'Coefficient de portance équilibrée')
+    plt.show
+     
     
 ###################################################################
 # Script principal de test
@@ -114,10 +126,7 @@ def evol_CLe(P):
 
 aircraft = dyn.Param_A321()
 
-#evol_poussee(aircraft)
-#evol_coeff_portance(aircraft)
-# evol_dphre(aircraft)
 evol_CLe(aircraft)
-plt.show()
+
 
 ###################################################################
