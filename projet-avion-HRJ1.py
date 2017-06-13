@@ -92,12 +92,17 @@ def evol_dphre(P):
         dphrs=[]
         dphrs = np.array([(P.ms*P.CLa*(alpha-P.a0)-P.Cm0)/P.Cmd for alpha in alphas]  )  
         plt.plot(ut.deg_of_rad(alphas),ut.deg_of_rad(dphrs))
-    label1 = patches.Patch(color='blue',label='ms = -0.1')
-    label2 = patches.Patch(color='green',label='ms = 0')
-    label3 = patches.Patch(color='red',label='ms = 0.2')
-    label4 = patches.Patch(color='cyan',label='ms = 1')
-    plt.legend(loc='upper right',handles=[label1,label2,label3,label4])
-    ut.decorate(plt.gca(), "Evolution de DPHRe en fonction de l'incidence", 'Incidence', 'Delta de braquage équilibré')
+    legends=['ms {}'.format(ms) for ms in mss]
+    ut.decorate(plt.gca(), "Evolution de DPHRe en fonction de l'incidence", 'Incidence', 'Delta de braquage équilibré', legend=legends)
+    plt.figure()
+    Vts=[0.9,1,1.1]
+    for Vt in Vts:
+        P.Vt=Vt
+        P.Cmd=-P.Vt*P.CLat
+        dphrs = np.array([(P.ms*P.CLa*(alpha-P.a0)-P.Cm0)/P.Cmd for alpha in alphas] ) 
+        plt.plot(ut.deg_of_rad(alphas),ut.deg_of_rad(dphrs))
+    legends=['Vt {}'.format(Vt) for Vt in Vts]
+    ut.decorate(plt.gca(), "Evolution de DPHRe en fonction de l'incidence", 'Incidence', 'Delta de braquage équilibré', legend=legends)
     plt.show()
     
 #5    
