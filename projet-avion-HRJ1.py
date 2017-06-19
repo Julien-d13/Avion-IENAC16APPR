@@ -109,7 +109,7 @@ def evol_dphre(P):
 def evol_CLe(P):
     q=0
     mss=[0.2,1]
-    alphas = np.arange(ut.rad_of_deg(-10),ut.rad_of_deg(20),ut.rad_of_deg(1))
+    alphas = np.arange(-10,20,1)
     km=0.5
     for ms in mss:
         P.set_mass_and_static_margin(km, ms)
@@ -158,7 +158,7 @@ def polaire_equi(P):
 
 aircraft = dyn.Param_A321()
 
-polaire_equi(aircraft)
+evol_CLe(aircraft)
 
 
 ###################################################################

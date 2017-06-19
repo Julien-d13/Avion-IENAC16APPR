@@ -19,8 +19,9 @@ import dynamic as dyn, utils as ut
 
 # Séance 2
 
-hs=[3000,11000]
-x = np.linspace(3000,11000,2)
+# hs=[3000,11000]
+x = np.linspace(3000,11000,16)
+hs=x
 ms=[0.2,1]
 machs=[0.5,0.8]
 km=[0.1,0.9]
@@ -31,17 +32,17 @@ couples = [[0.2,0.1],[0.2,0.9],[1.,0.1],[1.,0.9]]
 
 def evol_trym(P):
     for couple in couples:
-        ac.set_mass_and_static_margin(couple[1],couple[0])
+        P.set_mass_and_static_margin(couple[1],couple[0])
         alpha1, alpha2, dphr1, dphr2, dth1, dth2 = [], [], [], [], [], []
         for h in hs:
             arg1 = {'va': dyn.va_of_mach(machs[0], h, k=1.4, Rs=287.05), 'h': h}
-            alpha1.append(dyn.trim(P,arg1)[0][3])
-            dphr1.append(dyn.trim(P,arg1)[1][0])
-            dth1.append(dyn.trim(P,arg1)[1][1])
+            alpha1.append(ut.deg_of_rad(dyn.trim(P,arg1)[0][3]))
+            dphr1.append(ut.deg_of_rad(dyn.trim(P,arg1)[1][0]))
+            dth1.append(dyn.trim(P,arg1)[1][1]*100)
             arg2 = {'va': dyn.va_of_mach(machs[1], h, k=1.4, Rs=287.05), 'h': h}
-            alpha2.append(dyn.trim(P,arg2)[0][3])
-            dphr2.append(dyn.trim(P,arg2)[1][0])
-            dth2.append(dyn.trim(P,arg2)[1][1])
+            alpha2.append(ut.deg_of_rad(dyn.trim(P,arg2)[0][3]))
+            dphr2.append(ut.deg_of_rad(dyn.trim(P,arg2)[1][0]))
+            dth2.append(dyn.trim(P,arg2)[1][1]*100)
         alphatab1.append(alpha1)
         alphatab2.append(alpha2)
         dthtab1.append(dth1)
@@ -51,38 +52,38 @@ def evol_trym(P):
     al1 = np.array(alphatab1)
     al2 = np.array(alphatab2)
     f, axarr = plt.subplots(4,3)
-    axarr[0, 0].plot(x, al1[0])
+    axarr[0, 0].plot(x, al1[0],'b')
     axarr[0, 0].set_title('Alpha')
-    axarr[1, 0].plot(x, al1[1])
-    axarr[2, 0].plot(x, al1[2])
-    axarr[3, 0].plot(x, al1[3])
-    axarr[0, 0].plot(x, al2[0])
-    axarr[1, 0].plot(x, al2[1])
-    axarr[2, 0].plot(x, al2[2])
-    axarr[3, 0].plot(x, al2[3])
+    axarr[1, 0].plot(x, al1[1],'b')
+    axarr[2, 0].plot(x, al1[2],'b')
+    axarr[3, 0].plot(x, al1[3],'b')
+    axarr[0, 0].plot(x, al2[0],'r')
+    axarr[1, 0].plot(x, al2[1],'r')
+    axarr[2, 0].plot(x, al2[2],'r')
+    axarr[3, 0].plot(x, al2[3],'r')
     dp1 = np.array(dphrtab1)
     dp2 = np.array(dphrtab2)
-    axarr[0, 1].plot(x, dp1[0])
+    axarr[0, 1].plot(x, dp1[0],'b')
     axarr[0, 1].set_title('Dphr')
-    axarr[1, 1].plot(x, dp1[1])
-    axarr[2, 1].plot(x, dp1[2])
-    axarr[3, 1].plot(x, dp1[3])
-    axarr[0, 1].plot(x, dp2[0])
-    axarr[1, 1].plot(x, dp2[1])
-    axarr[2, 1].plot(x, dp2[2])
-    axarr[3, 1].plot(x, dp2[3])
+    axarr[1, 1].plot(x, dp1[1],'b')
+    axarr[2, 1].plot(x, dp1[2],'b')
+    axarr[3, 1].plot(x, dp1[3],'b')
+    axarr[0, 1].plot(x, dp2[0],'r')
+    axarr[1, 1].plot(x, dp2[1],'r')
+    axarr[2, 1].plot(x, dp2[2],'r')
+    axarr[3, 1].plot(x, dp2[3],'r')
     dt1 = np.array(dthtab1)
     dt2 = np.array(dthtab2)
-    axarr[0, 2].plot(x, dt1[0])
+    axarr[0, 2].plot(x, dt1[0],'b')
     axarr[0, 2].set_title('Dth')
-    axarr[1, 2].plot(x, dt1[1])
-    axarr[2, 2].plot(x, dt1[2])
-    axarr[3, 2].plot(x, dt1[3])
-    axarr[0, 2].plot(x, dt2[0])
-    axarr[1, 2].plot(x, dt2[1])
-    axarr[2, 2].plot(x, dt2[2])
-    axarr[3, 2].plot(x, dt2[3])
-    f.suptitle("Valeur de Alpha, Dphr et Dth pour un vol en palier en fonction de l'Altitude pour les couples \n [ms, km] suivants : [0.2, 0.1], [0.2, 0.9], [1., 0.1], [1., 0.9]")
+    axarr[1, 2].plot(x, dt1[1],'b')
+    axarr[2, 2].plot(x, dt1[2],'b')
+    axarr[3, 2].plot(x, dt1[3],'b')
+    axarr[0, 2].plot(x, dt2[0],'r')
+    axarr[1, 2].plot(x, dt2[1],'r')
+    axarr[2, 2].plot(x, dt2[2],'r')
+    axarr[3, 2].plot(x, dt2[3],'r')
+    f.suptitle("Valeur de Alpha, Dphr et Dth pour un vol en palier en fonction de l'Altitude pour les couples \n [ms, km] suivants : [0.2, 0.1], [0.2, 0.9], [1., 0.1], [1., 0.9].      En bleu pour Mach = 0.5 et en rouge pour Mach = 0.8")
     plt.show()
             # print('h {} {} gaz {:.1f} %'.format(h, Xe,Ue[dyn.i_dth]*100))
             # plt.subplot(
