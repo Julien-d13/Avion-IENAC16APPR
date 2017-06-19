@@ -9,9 +9,10 @@
 # Importations
 ###################################################################
 
+from math import *
 import numpy as np, matplotlib.pyplot as plt, matplotlib.patches as patches
 import dynamic as dyn, utils as ut
-
+import scipy
 
 ###################################################################
 # Fonctions
@@ -87,14 +88,87 @@ def evol_trym(P):
     plt.show()
             # print('h {} {} gaz {:.1f} %'.format(h, Xe,Ue[dyn.i_dth]*100))
             # plt.subplot(
+            
+            
+#Q3
+def trajectoire(M,h,ms,km,P):
+    t = np.arange(0,100,0.5)
+    P.set_mass_and_static_margin(km,ms)
+    va = dyn.va_of_mach(M,h,k=1.4, Rs=287.05)
+    param = {'va':va, 'h':h, 'gamma':0}
+    Xe, Ue = dyn.trim(P,param)
+    X = scipy.integrate.odeint(dyn.dyn, Xe, t, args=(Ue,P))
+    trace = dyn.plot(t,X)
+    plt.suptitle("Trajectoire de l'avion", fontsize = 22)
+    plt.show()
+    
+    
+#4
+def trace_vpropres(liste,km,ms,M,h):
+    plt.xlabel('partie reelle')
+    plt.ylabel('partie imaginaire')
+    # plt.title('M={}, h={}, ms={} et km={}'.format(M,h,ms,km))
+    liste2 = np.array(liste)
+    x,y = [], []
+    for i in range(len(liste2)):
+        x += [liste2[i].real]
+        y += [liste2[i].imag]
+    plt.plot(x,y,'bs')
+    plt.suptitle("Variation des valeurs propres", fontsize=22)
+    plt.show()
+
+def reduire(m):
+    i,j = 2,2
+    matrice_red = np.array([[m[i][j],m[i][j+1],m[i,j+2],m[i,j+3]],[m[i+1,j],m[i+1,j+1],m[i+1,j+2],m[i+1,j+3]],[m[i+2,j],m[i+2,j+1],m[i+2,j+2],m[i+2,j+3]],[m[i+3,j],m[i+3,j+1],m[i+3,j+2],m[i+3,j+3]]])
+    return matrice_red
+
+def obtain_matrices(km,ms,M,h,P):
+    P.set_mass_and_static_margin(km,ms)
+    va = dyn.va_of_mach(M,h)
+    param = {'va':va,'gamma':0,'h':h}
+    X,U = dyn.trim(P,param)
+    A,B = ut.num_jacobian(X,U,P,dyn.dyn)
+    print('\n \n A et B pour M={}, h={}, ms={} et km={}'.format(M,h,ms,km))
+    A2 = reduire(A)
+    print(np.linalg.eig(A2))
+    liste = np.linalg.eig(A2)[0]
+    trace_vpropres(liste,km,ms,M,h)
+
+def obtain_all_matrices(P):
+    idx=1
+    for km in kms:
+        for ms in mss:
+            for M in Ms:
+                for h in hs:
+                    plt.subplot(4,4,idx)
+                    idx+=1
+                    obtain_matrices(km,ms,M,h,P)
+                    ax=plt.gca()
+                    ax.set_ylim(-1, 1)
+                    ax.set_xlim(-6, 6)
+                    plt.text(-1,1 ,'M={}, h={} \n ms={} et km={}'.format(M,h,ms,km))
+                    
+
+
+# Tracés
+hs = [3000, 11000]
+Ms = [0.5, 0.8]
+kms = [0.1,0.9]
+mss = [0.2,1]
+avion = dyn.Param_A321()
+obtain_all_matrices(avion)
+
     
 ###################################################################
 # Script principal de test
 ###################################################################
 
 aircraft = dyn.Param_A321()
-evol_trym(aircraft)
+#evol_trym(aircraft)
 
+#trajectoire(0.8,3000,0.2,0.1,aircraft)
+
+#vitesse de convergence : exp(-Oméga * Xi * t)
 
 
 ###################################################################

@@ -86,7 +86,7 @@ def evol_Cm(P):
 def evol_dphre(P):
     mss=[-0.1,0,0.2,1]
     alphas = np.arange(ut.rad_of_deg(-10),ut.rad_of_deg(20),ut.rad_of_deg(1))
-    km=0.5
+    km=0.1
     for ms in mss:
         P.set_mass_and_static_margin(km, ms)
         dphrs=[]
@@ -109,15 +109,15 @@ def evol_dphre(P):
 def evol_CLe(P):
     q=0
     mss=[0.2,1]
-    alphas = np.arange(-10,20,1)
-    km=0.5
+    alphas = np.arange(ut.rad_of_deg(-10),ut.rad_of_deg(20),ut.rad_of_deg(1))
+    km=0.1
     for ms in mss:
         P.set_mass_and_static_margin(km, ms)
         dphrs=[]
         dphrs = np.array([(P.ms*P.CLa*(alpha-P.a0)-P.Cm0)/P.Cmd for alpha in alphas]  )
         CLe=[]
         CLe = [dyn.get_aero_coefs(dyn.va_of_mach(0.7,7000), alpha, q, dphr, P)[0] for alpha,dphr in zip(alphas,dphrs)]
-        plt.plot(alphas, CLe)
+        plt.plot(ut.deg_of_rad(alphas), CLe)
     label1 = patches.Patch(color='blue',label='ms = 0.2')
     label2 = patches.Patch(color='green',label='ms = 1')
     plt.legend(loc='upper left',handles=[label1,label2])
@@ -129,7 +129,7 @@ def polaire_equi(P):
     q=0
     mss=[0.2,1]
     alphas = np.arange(ut.rad_of_deg(-10),ut.rad_of_deg(20),ut.rad_of_deg(1))
-    km=0.5
+    km=0.1
     for ms in mss:
         P.set_mass_and_static_margin(km, ms)
         dphrs=[]
@@ -143,10 +143,10 @@ def polaire_equi(P):
         print(fmax)
         plt.plot([0,Cxe[idmax]],[0,CLe[idmax]])
         plt.plot(Cxe, CLe)
-    label1 = patches.Patch(color='blue',label='Polaire (ms = 0.2)')
-    label2 = patches.Patch(color='green',label='fmax (ms = 0.2)')
-    label3 = patches.Patch(color='red',label='Polaire (ms = 1)')
-    label4 = patches.Patch(color='cyan',label='fmax (ms = 1)')
+    label1 = patches.Patch(color='blue',label='fmax (ms = 0.2)')
+    label2 = patches.Patch(color='green',label='Polaire (ms = 0.2)')
+    label3 = patches.Patch(color='red',label='fmax (ms = 1)')
+    label4 = patches.Patch(color='cyan',label='Polaire (ms = 1)')
     plt.legend(loc='upper left',handles=[label1,label2,label3,label4])
     ut.decorate(plt.gca(), "Evolution de la polaire équilibrée", 'Coefficient de trainée équilibrée', 'Coefficient de portance équilibrée')
     plt.show
@@ -159,6 +159,10 @@ def polaire_equi(P):
 aircraft = dyn.Param_A321()
 
 evol_CLe(aircraft)
+plt.figure()
+evol_dphre(aircraft)
+plt.figure()
+polaire_equi(aircraft)
 
 
 ###################################################################
